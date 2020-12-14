@@ -1,2 +1,0 @@
-MONGO_DB_URI_DEV='mongodb://localhost:27017/jwt-express-db'
-PORT=3000
