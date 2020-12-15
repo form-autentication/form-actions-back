@@ -1,43 +1,48 @@
-import express from "express";
+import express, { Router } from "express";
 import bodyParse from "body-parser";
 import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 import config from "./config";
+import { Routes } from "./routes/routes";
 
-const startServer = async () => {
-   const app = express();
+class App {
+   public app: express.Application = express();
 
-   MongoClient.connect(config.databaseURL as any, {
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
-   })
-      .then((client) => {
-         const db = client.db("form-actions");
+   public routerPrv: Routes = new Routes();
 
-         const quotesCollection = db.collection("quotes");
+   public mongoURL: any = config.databaseURL;
 
-         app.post("/quotes", (req, res) => {
-            quotesCollection
-               .insertOne(req.body)
-               .then((result) => {
-                  console.log(result);
-                  res.redirect("/");
-               })
-               .catch((error) => console.error(error));
-         });
+   public db: any;
 
-         // console.log("Conected database: ", db);
-      })
-      .catch((error) => console.error(error));
+   constructor() {
+      this.configuration();
+      this.mongodbSetup();
+      this.routerPrv.routes(this.app);
+   }
 
-   app.use(bodyParse.urlencoded({ extended: true }));
+   /**
+    * Configuration in middlewares
+    */
+   private configuration(): void {
+      this.app.use(bodyParse.json());
+      this.app.use(bodyParse.urlencoded({ extended: true }));
+   }
 
-   app.get("/", (req, res) => {
-      res.send("Si funciono correctamente desde mi casa");
-   });
+   /**
+    * Conect to Moongodb
+    */
+   private mongodbSetup(): void {
+      mongoose.connect(this.mongoURL, {
+         useNewUrlParser: true,
+         useUnifiedTopology: true,
+      });
 
-   app.listen(config.port, () =>
-      console.log(`Esta conectado en el puerto ${config.port}`)
-   );
-};
+      this.db = mongoose.connection;
+      this.db.on("error", console.error.bind(console, "Conection error: "));
+      this.db.once("open", () => {
+         console.log("Se conecto a la base de datos");
+      });
+   }
+}
 
-startServer();
+export default new App().app;

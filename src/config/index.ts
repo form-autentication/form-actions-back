@@ -11,7 +11,7 @@ if (envFound.error) {
 export default {
    port: process.env.PORT,
 
-   portFront: process.env.PORT_FRONT,
+   portFront: process.env.PORT_FRONT!,
 
    databaseURL: process.env.MONGODB_URI,
 };
