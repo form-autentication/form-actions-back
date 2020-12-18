@@ -2,7 +2,7 @@ import express, { Router } from "express";
 import bodyParse from "body-parser";
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
-import config from "./config";
+import config from "./config/config";
 import { Routes } from "./routes/routes";
 
 class App {

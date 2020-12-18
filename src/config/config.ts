@@ -9,7 +9,7 @@ if (envFound.error) {
 }
 
 export default {
-   port: process.env.PORT,
+   port: process.env.PORT_BACK || process.env.PORT,
 
    portFront: process.env.PORT_FRONT!,
 
