@@ -2,6 +2,6 @@ POST http://localhost:8000/quotes
 content-type: application/json
 
 {
-    "email": "williancalsin@gmail.com",
-    "password": "williancalsinBORDA"
+    "email": "matilde",
+    "password": "matilde"
 }
