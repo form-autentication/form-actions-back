@@ -1,9 +1,10 @@
-import express, { Router } from "express";
+import express, { Request, Response, NextFunction, Router } from "express";
 import bodyParse from "body-parser";
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
 import config from "./config/config";
 import { Routes } from "./routes/routes";
+import cors from "cors";
 
 class App {
    public app: express.Application = express();
@@ -26,6 +27,24 @@ class App {
    private configuration(): void {
       this.app.use(bodyParse.json());
       this.app.use(bodyParse.urlencoded({ extended: true }));
+
+      this.app.use((req: Request, res: Response, next: NextFunction) => {
+         res.header("Access-Control-Allow-Origin", "*");
+
+         res.header(
+            "Access-Control-Allow-Headers",
+            "Origin, X-Requested-With, Content-Type, Accept"
+         );
+         next();
+
+         // this.app.options("*", (req: Request, res: Response) => {
+         //    res.header(
+         //       "Access-Control-Allow-Methods",
+         //       "GET, PATCH, PUT, POST, DELETE, OPTIONS"
+         //    );
+         //    res.send();
+         // });
+      });
    }
 
    /**
