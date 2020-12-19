@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import config from "./config/config";
 import app from "./index";
 

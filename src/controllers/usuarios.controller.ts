@@ -32,7 +32,7 @@ const verifyText = (word: string, keyWord: string): boolean => {
  * Crear Usuarios
  */
 const createUsers = async (req: Request, res: Response, next: NextFunction) => {
-   let { email, password } = req.body;
+   let { name, email, password } = req.body;
 
    verifyText(req.body.email, "@gmail.com")
       ? (email = email)
@@ -41,7 +41,7 @@ const createUsers = async (req: Request, res: Response, next: NextFunction) => {
    let flag = await getUser(email);
 
    if (flag) {
-      const user = new Usuarios({ email, password });
+      const user = new Usuarios({ name, email, password });
 
       user
          .save()
@@ -54,6 +54,7 @@ const createUsers = async (req: Request, res: Response, next: NextFunction) => {
 
       next();
    } else {
+      res.json({ mssg: "Ya tiene ese mismo dato" });
       console.log("Ya tiene ese mismo dato");
    }
 };
@@ -65,9 +66,9 @@ const getAllUsers = (res: Response) => {
    Usuarios.find()
       .exec()
       .then((results) => {
-         console.log(results);
+         res.json({ msg: "Si se acepto la solicitud desde el login" });
 
-         res.json(results);
+         console.log(results);
       })
       .catch((error) => {
          console.error(`No hay datos en la BD:  ${error}`);
