@@ -1,12 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import cors from "cors";
-import { createUsers, getAllUsers } from "../controllers/usuarios.controller";
+import {
+   createUsers,
+   getAllUsers,
+   verifyUser,
+} from "../controllers/usuarios.controller";
 import config from "../config/config";
 
 export class Routes {
    public portFront: String = config.portFront;
-
-   public allowlist: String = "http://localhost:3000";
 
    constructor() {}
 
@@ -29,8 +31,13 @@ export class Routes {
          });
 
       app.route("/login")
-         .post(() =>
-            console.log("Se llamo a la pagina login con el metodo POST")
+         .post(
+            verifyUser,
+            (req: Request, res: Response, next: NextFunction) => {
+               console.log("Se llamo a la pagina login con el metodo POST");
+
+               res.json({ msg: "Si se llamo al login" });
+            }
          )
          .get(() =>
             console.log("Se llamo a la pagina login con el metodo GET")

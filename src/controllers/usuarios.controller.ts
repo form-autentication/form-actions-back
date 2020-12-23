@@ -1,12 +1,22 @@
 import { Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
 import { Usuarios } from "../models/schema";
 
 /**
  * Buscar si existe o no ese usuario
  */
-const getUser = async (email: string): Promise<boolean> => {
-   const flag = await Usuarios.find({ email: email });
+const getUser = async (email: string, password?: string): Promise<boolean> => {
+   let flag;
+
+   if (password) {
+      flag = await Usuarios.find({
+         email: email,
+         password: password,
+      });
+   } else {
+      flag = await Usuarios.find({
+         email: email,
+      });
+   }
 
    if (flag === undefined || flag == null || flag.length <= 0) {
       return true;
@@ -55,6 +65,32 @@ const createUsers = async (req: Request, res: Response, next: NextFunction) => {
       next();
    } else {
       res.json({ mssg: "Ya tiene ese mismo dato" });
+
+      console.log("Ya tiene ese mismo dato");
+   }
+};
+
+/**
+ * Verificar los usarios existentes
+ */
+const verifyUser = async (req: Request, res: Response, next: NextFunction) => {
+   let { email, password } = req.body;
+
+   verifyText(req.body.email, "@gmail.com")
+      ? (email = email)
+      : (email = `${email}@gmail.com`);
+
+   let flag = await getUser(email, password);
+
+   if (flag) {
+      res.json({ mssg: "No exsite el Usario" });
+
+      console.log("No existe el usuario");
+
+      next();
+   } else {
+      res.json({ mssg: "Si existe es usario" });
+
       console.log("Ya tiene ese mismo dato");
    }
 };
@@ -75,4 +111,4 @@ const getAllUsers = (res: Response) => {
       });
 };
 
-export { getAllUsers, createUsers };
+export { getAllUsers, createUsers, verifyUser };
