@@ -34,7 +34,6 @@ const verifyText = (word: string, keyWord: string): boolean => {
    if (position !== -1) {
       return true;
    }
-
    return false;
 };
 
@@ -42,13 +41,14 @@ const verifyText = (word: string, keyWord: string): boolean => {
  * Crear Usuarios
  */
 const createUsers = async (req: Request, res: Response, next: NextFunction) => {
+   let flag;
    let { name, email, password } = req.body;
 
    verifyText(req.body.email, "@gmail.com")
       ? (email = email)
       : (email = `${email}@gmail.com`);
 
-   let flag = await getUser(email);
+   flag = await getUser(email);
 
    if (flag) {
       const user = new Usuarios({ name, email, password });
@@ -61,11 +61,8 @@ const createUsers = async (req: Request, res: Response, next: NextFunction) => {
          .catch((error) =>
             console.error("No se gurdaron los datos enviados" + error)
          );
-
-      next();
    } else {
       res.json({ mssg: "Ya tiene ese mismo dato" });
-
       console.log("Ya tiene ese mismo dato");
    }
 };
@@ -74,22 +71,22 @@ const createUsers = async (req: Request, res: Response, next: NextFunction) => {
  * Verificar los usarios existentes
  */
 const verifyUser = async (req: Request, res: Response, next: NextFunction) => {
+   let flag;
+
    let { email, password } = req.body;
 
    verifyText(req.body.email, "@gmail.com")
       ? (email = email)
       : (email = `${email}@gmail.com`);
 
-   let flag = await getUser(email, password);
+   flag = await getUser(email, password);
 
    if (flag) {
-      res.json({ mssg: "No exsite el Usario" });
+      res.json({ mssg: "No exsite el Usario", flag: false });
 
       console.log("No existe el usuario");
-
-      next();
    } else {
-      res.json({ mssg: "Si existe es usario" });
+      res.json({ mssg: "Si existe es usario", flag: true });
 
       console.log("Ya tiene ese mismo dato");
    }
@@ -102,9 +99,9 @@ const getAllUsers = (res: Response) => {
    Usuarios.find()
       .exec()
       .then((results) => {
-         res.json({ msg: "Si se acepto la solicitud desde el login" });
-
-         console.log(results);
+         // res.json({ msg: "Si se acepto la solicitud for the page Profile" });
+         res.send(results);
+         // console.log(results);
       })
       .catch((error) => {
          console.error(`No hay datos en la BD:  ${error}`);
