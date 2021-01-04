@@ -22,6 +22,7 @@
    },
    "scripts": {
       "build": "tsc",
+      "start": "ts-node src/server.ts",
       "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/server.ts",
       "server": "nodemon './dist/server.js' --watch './dist'",
       "test": "echo \"Error: no test specified\" && exit 1"
